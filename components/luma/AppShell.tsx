@@ -4,10 +4,10 @@ import { useEffect, useState } from "react";
 import { loadStore } from "@/lib/store";
 
 const NAV = [
-  { icon: "🏠", label: "Início",     href: "/home" },
-  { icon: "📈", label: "Evolução",   href: "/desenvolvimento" },
-  { icon: "📚", label: "Conteúdo",  href: "#" },
-  { icon: "⚙️", label: "Ajustes",   href: "#" },
+  { icon:"🏠", label:"Início",   href:"/home" },
+  { icon:"💬", label:"Chat",     href:"/chat" },
+  { icon:"📈", label:"Evolução", href:"/desenvolvimento" },
+  { icon:"⚙️", label:"Ajustes", href:"#" },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -24,20 +24,15 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  function go(href: string) {
-    if (href !== "#") router.push(href);
-  }
-
-  function isActive(href: string) {
-    return pathname === href || pathname.startsWith(href + "/");
-  }
+  function go(href: string) { if (href !== "#") router.push(href); }
+  function isActive(href: string) { return pathname === href || pathname.startsWith(href + "/"); }
 
   const initial = parentName ? parentName[0].toUpperCase() : "?";
 
   return (
     <div className="app-shell">
 
-      {/* ── SIDEBAR (desktop only) ── */}
+      {/* ── DESKTOP SIDEBAR ── */}
       <aside className="app-sidebar">
         <div className="sidebar-logo">lu<span>m</span>a</div>
         <div className="sidebar-tagline">Seu copiloto familiar</div>
@@ -53,12 +48,11 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
 
         <button onClick={() => go("/registro")}
           className="sidebar-item"
-          style={{ marginTop: 8, background: "var(--sage)", color: "var(--sage-dk)" }}>
+          style={{ marginTop:8, background:"var(--sage)", color:"var(--sage-dk)" }}>
           <span className="s-icon">✏️</span>
           Registrar
         </button>
 
-        {/* user info at bottom */}
         {parentName && (
           <div className="sidebar-user">
             <div className="sidebar-avatar">{initial}</div>
@@ -73,40 +67,38 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
       {/* ── PHONE FRAME ── */}
       <div className="app-frame">
         <div className="app-phone">
-
-          {/* scrollable content */}
           <div className="app-scroll">
             {children}
           </div>
 
-          {/* ── BOTTOM NAV (mobile only, inside frame) ── */}
+          {/* ── BOTTOM NAV (mobile only) ── */}
           <nav className="bottom-nav">
             {NAV.map(item => {
               const active = isActive(item.href);
               return (
                 <button key={item.href} onClick={() => go(item.href)}
                   style={{
-                    display: "flex", flexDirection: "column", alignItems: "center",
-                    gap: 3, padding: "4px 14px", border: "none", background: "none",
-                    cursor: "pointer", opacity: active ? 1 : 0.38, transition: "opacity 0.2s"
+                    display:"flex", flexDirection:"column", alignItems:"center",
+                    gap:3, padding:"4px 12px", border:"none", background:"none",
+                    cursor:"pointer", opacity: active ? 1 : 0.38, transition:"opacity 0.2s",
                   }}>
-                  <span style={{ fontSize: 20 }}>{item.icon}</span>
-                  <span style={{
-                    fontSize: 10, fontWeight: 600, fontFamily: "Inter, sans-serif",
-                    color: active ? "var(--sage-dk)" : "var(--ink)"
-                  }}>{item.label}</span>
+                  <span style={{ fontSize:20 }}>{item.icon}</span>
+                  <span style={{ fontSize:10, fontWeight:600, fontFamily:"Inter,sans-serif",
+                                 color: active ? "var(--sage-dk)" : "var(--ink)" }}>
+                    {item.label}
+                  </span>
                 </button>
               );
             })}
 
-            {/* FAB register */}
+            {/* FAB */}
             <button onClick={() => go("/registro")}
               style={{
-                width: 50, height: 50, borderRadius: "50%",
-                background: "var(--ink)", border: "3px solid var(--bg)",
-                display: "flex", alignItems: "center", justifyContent: "center",
-                fontSize: 19, marginTop: -18, cursor: "pointer", flexShrink: 0,
-                boxShadow: "0 4px 14px rgba(38,35,30,0.22)"
+                width:50, height:50, borderRadius:"50%",
+                background:"var(--ink)", border:"3px solid var(--bg)",
+                display:"flex", alignItems:"center", justifyContent:"center",
+                fontSize:19, marginTop:-18, cursor:"pointer", flexShrink:0,
+                boxShadow:"0 4px 14px rgba(38,35,30,0.22)",
               }}>✏️</button>
           </nav>
         </div>

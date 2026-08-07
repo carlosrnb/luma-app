@@ -164,6 +164,34 @@ export default function Home() {
             question={`Dê um insight curto e acolhedor sobre como ${babyName} está hoje, baseado no contexto.`} />
         </div>
 
+        {/* CHAT ENTRY */}
+        <div style={{ padding:"10px 18px 0" }}>
+          <button onClick={() => router.push("/chat")}
+            style={{
+              width:"100%", background:"var(--ink)", borderRadius:"var(--r)",
+              padding:"14px 18px", display:"flex", alignItems:"center", gap:12,
+              border:"none", cursor:"pointer", textAlign:"left",
+              transition:"opacity 0.2s",
+            }}
+            onMouseEnter={e => (e.currentTarget.style.opacity="0.88")}
+            onMouseLeave={e => (e.currentTarget.style.opacity="1")}>
+            <div style={{ width:36, height:36, borderRadius:"50%", flexShrink:0,
+                          background:"linear-gradient(135deg,var(--sage),var(--sage-icon))",
+                          display:"flex", alignItems:"center", justifyContent:"center", fontSize:16 }}>
+              ✦
+            </div>
+            <div style={{ flex:1 }}>
+              <p className="f-nunito" style={{ fontSize:14, fontWeight:700, color:"white" }}>
+                Pergunte qualquer coisa à Luma
+              </p>
+              <p style={{ fontSize:11, color:"rgba(255,255,255,0.55)", marginTop:2 }}>
+                Sono, alimentação, desenvolvimento…
+              </p>
+            </div>
+            <span style={{ fontSize:18, color:"rgba(255,255,255,0.4)" }}>›</span>
+          </button>
+        </div>
+
         {/* SECTION HEADER */}
         <div style={{ display:"flex", alignItems:"center", justifyContent:"space-between",
                       padding:"18px 18px 12px" }}>

@@ -73,3 +73,64 @@ export function last7Days(): string[] {
     return d.toISOString().split("T")[0];
   });
 }
+
+export interface ChatMessage {
+  id: string;
+  role: "user" | "assistant";
+  text: string;
+  ts: number; // timestamp
+}
+
+export function loadChat(): ChatMessage[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("luma_chat_v1");
+    return raw ? JSON.parse(raw) : [];
+  } catch { return []; }
+}
+
+export function saveChat(msgs: ChatMessage[]) {
+  if (typeof window === "undefined") return;
+  // keep last 60 messages
+  localStorage.setItem("luma_chat_v1", JSON.stringify(msgs.slice(-60)));
+}
+
+export function clearChat() {
+  if (typeof window === "undefined") return;
+  localStorage.removeItem("luma_chat_v1");
+}
+
+// Pro status helpers
+export interface ProStatus {
+  isPro: boolean;
+  trialUsed: boolean;
+  freeMessagesUsed: number; // resets daily
+  freeMessagesDate: string; // YYYY-MM-DD
+}
+
+export function loadProStatus(): ProStatus {
+  if (typeof window === "undefined")
+    return { isPro: false, trialUsed: false, freeMessagesUsed: 0, freeMessagesDate: "" };
+  try {
+    const raw = localStorage.getItem("luma_pro_v1");
+    const today = new Date().toISOString().split("T")[0];
+    if (!raw) return { isPro: false, trialUsed: false, freeMessagesUsed: 0, freeMessagesDate: today };
+    const parsed = JSON.parse(raw) as ProStatus;
+    // reset daily counter
+    if (parsed.freeMessagesDate !== today) {
+      parsed.freeMessagesUsed = 0;
+      parsed.freeMessagesDate = today;
+      localStorage.setItem("luma_pro_v1", JSON.stringify(parsed));
+    }
+    return parsed;
+  } catch {
+    return { isPro: false, trialUsed: false, freeMessagesUsed: 0, freeMessagesDate: "" };
+  }
+}
+
+export function saveProStatus(status: ProStatus) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_pro_v1", JSON.stringify(status));
+}
+
+export const FREE_MSG_LIMIT = 3; // messages per day on free plan
