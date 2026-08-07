@@ -5,6 +5,7 @@
 
 :root {
   --bg:         #F7F4EF;
+  --canvas:     #EDEAE4;
   --white:      #FFFFFF;
   --ink:        #26231E;
   --ink-mid:    #5C5850;
@@ -28,158 +29,227 @@
   --mint-icon:  #96D4C6;
   --blush:      #F0D8E8;
   --blush-icon: #E0AECF;
-  --r:          22px;
-  --r-sm:       14px;
+  --r:          20px;
+  --r-sm:       12px;
+  --sidebar-w:  230px;
 }
 
-* { box-sizing: border-box; margin: 0; padding: 0; }
-html { background: var(--bg); }
-body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--bg); }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* ── APP SHELL ── */
+html, body {
+  height: 100%;
+  font-family: 'Inter', sans-serif;
+  color: var(--ink);
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── MOBILE: full screen app ── */
 .app-shell {
   display: flex;
-  min-height: 100vh;
+  height: 100dvh;
+  width: 100%;
+  overflow: hidden;
   background: var(--bg);
 }
 
-/* Sidebar — desktop only */
-.app-sidebar {
-  display: none;
-}
+.app-sidebar { display: none; }
 
-/* Mobile frame */
-.app-main {
+.app-frame {
   flex: 1;
-  width: 100%;
-  max-width: 430px;
-  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
   position: relative;
-  min-height: 100vh;
+  background: var(--bg);
 }
 
+.app-scroll {
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  scroll-behavior: smooth;
+}
+.app-scroll::-webkit-scrollbar { display: none; }
+.app-scroll { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* ── DESKTOP: sidebar + phone frame centered ── */
 @media (min-width: 768px) {
+  html, body { background: var(--canvas); }
+
   .app-shell {
-    align-items: stretch;
-    justify-content: center;
-    background: #EFECE6;
-  }
-
-  /* Desktop: phone frame centered */
-  .app-main {
-    width: 430px;
-    flex: none;
-    border-radius: 40px;
+    height: 100vh;
     overflow: hidden;
-    box-shadow: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
-    margin: 32px auto;
-    min-height: calc(100vh - 64px);
-    max-height: calc(100vh - 64px);
-    overflow-y: auto;
-    scroll-behavior: smooth;
-    background: var(--bg);
+    background: var(--canvas);
   }
 
-  .app-main::-webkit-scrollbar { display: none; }
-  .app-main { -ms-overflow-style: none; scrollbar-width: none; }
-
-  /* Desktop sidebar */
   .app-sidebar {
     display: flex;
     flex-direction: column;
-    width: 220px;
-    padding: 40px 24px;
-    gap: 8px;
-    position: sticky;
-    top: 0;
+    width: var(--sidebar-w);
+    flex-shrink: 0;
+    padding: 32px 20px;
     height: 100vh;
+    overflow-y: auto;
+    background: transparent;
   }
 
-  .sidebar-logo {
-    font-family: 'Nunito', sans-serif;
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--ink);
-    margin-bottom: 32px;
-    letter-spacing: -0.5px;
-  }
-
-  .sidebar-logo span { color: var(--sage-dk); }
-
-  .sidebar-item {
+  .app-frame {
+    flex: 1;
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-    border-radius: 14px;
-    font-size: 14px;
-    font-weight: 600;
-    color: var(--ink-mid);
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-    text-decoration: none;
-    border: none;
-    background: none;
-    width: 100%;
-    text-align: left;
+    justify-content: center;
+    padding: 24px 0;
+    overflow: hidden;
   }
 
-  .sidebar-item:hover { background: rgba(0,0,0,0.05); color: var(--ink); }
-  .sidebar-item.active { background: var(--ink); color: white; }
-  .sidebar-item .s-icon { font-size: 18px; }
+  .app-phone {
+    width: 390px;
+    height: calc(100vh - 48px);
+    max-height: 844px;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,0.08),
+      0 24px 64px rgba(0,0,0,0.18),
+      0 8px 24px rgba(0,0,0,0.08);
+    display: flex;
+    flex-direction: column;
+    background: var(--bg);
+    position: relative;
+  }
+
+  .app-scroll {
+    flex: 1;
+    overflow-y: auto;
+    scroll-behavior: smooth;
+  }
+  .app-scroll::-webkit-scrollbar { display: none; }
 }
 
-@media (min-width: 1200px) {
-  .app-sidebar { width: 260px; }
+@media (min-width: 1280px) {
+  --sidebar-w: 260px;
+  .app-sidebar { padding: 40px 28px; }
 }
 
-/* ── NUNITO HELPER ── */
-.f-nunito { font-family: 'Nunito', sans-serif; }
+/* ── SIDEBAR ELEMENTS ── */
+.sidebar-logo {
+  font-family: 'Nunito', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+  color: var(--ink);
+  letter-spacing: -0.5px;
+  margin-bottom: 8px;
+  padding: 0 8px;
+}
+.sidebar-logo span { color: var(--sage-dk); }
 
-/* ── BOTTOM NAV (mobile only) ── */
-.bottom-nav {
-  position: fixed;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
+.sidebar-tagline {
+  font-size: 12px;
+  color: var(--ink-lt);
+  padding: 0 8px;
+  margin-bottom: 36px;
+}
+
+.sidebar-section {
+  font-size: 10px;
+  font-weight: 700;
+  color: var(--ink-lt);
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  padding: 0 10px;
+  margin-bottom: 8px;
+  margin-top: 24px;
+}
+
+.sidebar-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  border-radius: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink-mid);
+  cursor: pointer;
+  border: none;
+  background: none;
   width: 100%;
-  max-width: 430px;
-  background: rgba(247,244,239,0.94);
-  backdrop-filter: blur(18px);
-  -webkit-backdrop-filter: blur(18px);
-  border-top: 1px solid rgba(0,0,0,0.06);
+  text-align: left;
+  transition: background 0.15s, color 0.15s;
+  font-family: 'Inter', sans-serif;
+  text-decoration: none;
+}
+.sidebar-item:hover:not(.active) { background: rgba(0,0,0,0.05); color: var(--ink); }
+.sidebar-item.active {
+  background: var(--ink);
+  color: white;
+}
+.sidebar-item .s-icon { font-size: 17px; flex-shrink: 0; }
+
+.sidebar-user {
+  margin-top: auto;
+  padding: 14px 12px;
+  border-radius: 14px;
+  background: white;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.sidebar-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--peach);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Nunito', sans-serif;
+  font-size: 15px; font-weight: 700;
+  color: var(--ink); flex-shrink: 0;
+}
+.sidebar-user-name { font-size: 13px; font-weight: 600; color: var(--ink); }
+.sidebar-user-sub  { font-size: 11px; color: var(--ink-lt); margin-top: 1px; }
+
+/* ── BOTTOM NAV — mobile only ── */
+.bottom-nav {
+  flex-shrink: 0;
   display: flex;
   justify-content: space-around;
   align-items: flex-end;
-  padding: 10px 0 24px;
+  padding: 10px 0 max(20px, env(safe-area-inset-bottom));
+  background: rgba(247,244,239,0.96);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid rgba(0,0,0,0.06);
   z-index: 100;
 }
-
-@media (min-width: 768px) {
-  .bottom-nav { display: none; }
-}
+@media (min-width: 768px) { .bottom-nav { display: none; } }
 
 /* ── CARD GRID ── */
 .card-grid {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 12px;
-  padding: 0 20px;
+  gap: 11px;
+  padding: 0 18px;
 }
 
-/* ── RANGE SLIDER ── */
-input[type=range] { accent-color: var(--lav-deep); width: 100%; }
+/* ── RANGE ── */
+input[type=range] { accent-color: var(--lav-deep); width: 100%; cursor: pointer; }
 
-/* ── ANIMATE ── */
+/* ── HELPERS ── */
+.f-nunito { font-family: 'Nunito', sans-serif; }
+.text-cap { text-transform: capitalize; }
+
+/* ── ANIMATIONS ── */
 @keyframes fadeUp {
-  from { opacity: 0; transform: translateY(12px); }
+  from { opacity: 0; transform: translateY(10px); }
   to   { opacity: 1; transform: translateY(0); }
 }
-.fade-up { animation: fadeUp 0.35s ease both; }
+.fade-up { animation: fadeUp 0.3s ease both; }
 
-/* ── BOUNCE (loading dots) ── */
-@keyframes bounce {
-  0%, 80%, 100% { transform: scale(0); }
-  40% { transform: scale(1); }
+@keyframes bounce3 {
+  0%, 80%, 100% { transform: scale(0); opacity: 0.3; }
+  40% { transform: scale(1); opacity: 1; }
 }
-.dot-bounce { animation: bounce 1.4s infinite ease-in-out both; }
+.dot-bounce { animation: bounce3 1.2s infinite ease-in-out both; }
+
+/* ── SCROLLBAR (desktop inside phone frame) ── */
+.app-phone .app-scroll::-webkit-scrollbar { display: none; }
