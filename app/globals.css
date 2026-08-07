@@ -1,0 +1,185 @@
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --bg:         #F7F4EF;
+  --white:      #FFFFFF;
+  --ink:        #26231E;
+  --ink-mid:    #5C5850;
+  --ink-lt:     #9B9690;
+  --sage:       #D4E8CC;
+  --sage-dk:    #6E9E65;
+  --sage-icon:  #B5D9A8;
+  --peach:      #F2DDD3;
+  --peach-icon: #E8BFB0;
+  --gold:       #EFE4C0;
+  --gold-icon:  #DECE96;
+  --lav:        #DDD8F2;
+  --lav-dk:     #BCB5E8;
+  --lav-deep:   #8880CC;
+  --lav-icon:   #BCB5E8;
+  --coral:      #F5D8D5;
+  --coral-icon: #EDADA8;
+  --sky:        #CCE3F0;
+  --sky-icon:   #A4CADF;
+  --mint:       #C8EAE2;
+  --mint-icon:  #96D4C6;
+  --blush:      #F0D8E8;
+  --blush-icon: #E0AECF;
+  --r:          22px;
+  --r-sm:       14px;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: var(--bg); }
+body { font-family: 'Inter', sans-serif; color: var(--ink); background: var(--bg); }
+
+/* ── APP SHELL ── */
+.app-shell {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* Sidebar — desktop only */
+.app-sidebar {
+  display: none;
+}
+
+/* Mobile frame */
+.app-main {
+  flex: 1;
+  width: 100%;
+  max-width: 430px;
+  margin: 0 auto;
+  position: relative;
+  min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+  .app-shell {
+    align-items: stretch;
+    justify-content: center;
+    background: #EFECE6;
+  }
+
+  /* Desktop: phone frame centered */
+  .app-main {
+    width: 430px;
+    flex: none;
+    border-radius: 40px;
+    overflow: hidden;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.18), 0 0 0 1px rgba(0,0,0,0.06);
+    margin: 32px auto;
+    min-height: calc(100vh - 64px);
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    scroll-behavior: smooth;
+    background: var(--bg);
+  }
+
+  .app-main::-webkit-scrollbar { display: none; }
+  .app-main { -ms-overflow-style: none; scrollbar-width: none; }
+
+  /* Desktop sidebar */
+  .app-sidebar {
+    display: flex;
+    flex-direction: column;
+    width: 220px;
+    padding: 40px 24px;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    height: 100vh;
+  }
+
+  .sidebar-logo {
+    font-family: 'Nunito', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--ink);
+    margin-bottom: 32px;
+    letter-spacing: -0.5px;
+  }
+
+  .sidebar-logo span { color: var(--sage-dk); }
+
+  .sidebar-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--ink-mid);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+    text-decoration: none;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+  }
+
+  .sidebar-item:hover { background: rgba(0,0,0,0.05); color: var(--ink); }
+  .sidebar-item.active { background: var(--ink); color: white; }
+  .sidebar-item .s-icon { font-size: 18px; }
+}
+
+@media (min-width: 1200px) {
+  .app-sidebar { width: 260px; }
+}
+
+/* ── NUNITO HELPER ── */
+.f-nunito { font-family: 'Nunito', sans-serif; }
+
+/* ── BOTTOM NAV (mobile only) ── */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 100%;
+  max-width: 430px;
+  background: rgba(247,244,239,0.94);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border-top: 1px solid rgba(0,0,0,0.06);
+  display: flex;
+  justify-content: space-around;
+  align-items: flex-end;
+  padding: 10px 0 24px;
+  z-index: 100;
+}
+
+@media (min-width: 768px) {
+  .bottom-nav { display: none; }
+}
+
+/* ── CARD GRID ── */
+.card-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  padding: 0 20px;
+}
+
+/* ── RANGE SLIDER ── */
+input[type=range] { accent-color: var(--lav-deep); width: 100%; }
+
+/* ── ANIMATE ── */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+.fade-up { animation: fadeUp 0.35s ease both; }
+
+/* ── BOUNCE (loading dots) ── */
+@keyframes bounce {
+  0%, 80%, 100% { transform: scale(0); }
+  40% { transform: scale(1); }
+}
+.dot-bounce { animation: bounce 1.4s infinite ease-in-out both; }
