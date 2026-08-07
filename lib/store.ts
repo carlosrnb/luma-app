@@ -134,3 +134,108 @@ export function saveProStatus(status: ProStatus) {
 }
 
 export const FREE_MSG_LIMIT = 3; // messages per day on free plan
+
+// ── ALIMENTAÇÃO ──
+export interface FeedLog {
+  date: string;       // YYYY-MM-DD
+  food: string;
+  reaction: "great" | "ok" | "refused" | "allergic";
+  notes?: string;
+}
+
+export function loadFeedLogs(): FeedLog[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem("luma_feed_v1") || "[]"); } catch { return []; }
+}
+export function saveFeedLogs(logs: FeedLog[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_feed_v1", JSON.stringify(logs));
+}
+
+// ── CRESCIMENTO ──
+export interface GrowthLog {
+  date: string;
+  weightKg?: number;
+  heightCm?: number;
+  headCm?: number;
+}
+
+export function loadGrowthLogs(): GrowthLog[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem("luma_growth_v1") || "[]"); } catch { return []; }
+}
+export function saveGrowthLogs(logs: GrowthLog[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_growth_v1", JSON.stringify(logs));
+}
+
+// ── VACINAÇÃO ──
+export interface VaccineRecord {
+  id: string;
+  name: string;
+  dueMonths: number;   // age in months when due
+  doneDate?: string;   // YYYY-MM-DD if applied
+}
+
+export const VACCINE_SCHEDULE: Omit<VaccineRecord, "doneDate">[] = [
+  { id:"bcg",          name:"BCG",                         dueMonths:0 },
+  { id:"hepb_0",       name:"Hepatite B (1ª dose)",        dueMonths:0 },
+  { id:"penta_1",      name:"Pentavalente (1ª dose)",      dueMonths:2 },
+  { id:"vip_1",        name:"VIP/Pólio (1ª dose)",         dueMonths:2 },
+  { id:"pneumo_1",     name:"Pneumocócica 10 (1ª dose)",   dueMonths:2 },
+  { id:"rota_1",       name:"Rotavírus (1ª dose)",         dueMonths:2 },
+  { id:"meningo_1",    name:"Meningocócica C (1ª dose)",   dueMonths:3 },
+  { id:"penta_2",      name:"Pentavalente (2ª dose)",      dueMonths:4 },
+  { id:"vip_2",        name:"VIP/Pólio (2ª dose)",         dueMonths:4 },
+  { id:"pneumo_2",     name:"Pneumocócica 10 (2ª dose)",   dueMonths:4 },
+  { id:"rota_2",       name:"Rotavírus (2ª dose)",         dueMonths:4 },
+  { id:"meningo_2",    name:"Meningocócica C (2ª dose)",   dueMonths:5 },
+  { id:"penta_3",      name:"Pentavalente (3ª dose)",      dueMonths:6 },
+  { id:"vip_3",        name:"VIP/Pólio (3ª dose)",         dueMonths:6 },
+  { id:"pneumo_3",     name:"Pneumocócica 10 (3ª dose)",   dueMonths:6 },
+  { id:"hepb_1",       name:"Hepatite B (3ª dose)",        dueMonths:6 },
+  { id:"influenza_1",  name:"Influenza (1ª dose)",         dueMonths:6 },
+  { id:"febre_amarela",name:"Febre Amarela",               dueMonths:9 },
+  { id:"meningo_ref",  name:"Meningocócica C (reforço)",   dueMonths:12 },
+  { id:"pneumo_ref",   name:"Pneumocócica 10 (reforço)",   dueMonths:12 },
+  { id:"triplice",     name:"Tríplice viral (1ª dose)",    dueMonths:12 },
+  { id:"varicela",     name:"Varicela",                    dueMonths:15 },
+  { id:"dtp_ref1",     name:"DTP (1º reforço)",            dueMonths:15 },
+  { id:"vop_ref",      name:"VOP/Pólio (1º reforço)",      dueMonths:15 },
+  { id:"triplice_2",   name:"Tríplice viral (2ª dose)",    dueMonths:15 },
+  { id:"hepA",         name:"Hepatite A",                  dueMonths:15 },
+  { id:"dtp_ref2",     name:"DTP (2º reforço)",            dueMonths:48 },
+  { id:"vop_ref2",     name:"VOP/Pólio (2º reforço)",      dueMonths:48 },
+];
+
+export function loadVaccineRecords(): VaccineRecord[] {
+  if (typeof window === "undefined") return VACCINE_SCHEDULE.map(v => ({ ...v }));
+  try {
+    const raw = localStorage.getItem("luma_vaccines_v1");
+    if (!raw) return VACCINE_SCHEDULE.map(v => ({ ...v }));
+    return JSON.parse(raw);
+  } catch { return VACCINE_SCHEDULE.map(v => ({ ...v })); }
+}
+export function saveVaccineRecords(records: VaccineRecord[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_vaccines_v1", JSON.stringify(records));
+}
+
+// ── CONSULTAS ──
+export interface Appointment {
+  id: string;
+  date: string;       // YYYY-MM-DD
+  time: string;       // HH:MM
+  doctor: string;
+  specialty: string;
+  notes?: string;
+}
+
+export function loadAppointments(): Appointment[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem("luma_appts_v1") || "[]"); } catch { return []; }
+}
+export function saveAppointments(appts: Appointment[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_appts_v1", JSON.stringify(appts));
+}

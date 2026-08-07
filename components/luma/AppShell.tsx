@@ -6,8 +6,8 @@ import { loadStore } from "@/lib/store";
 const NAV = [
   { icon:"🏠", label:"Início",   href:"/home" },
   { icon:"💬", label:"Chat",     href:"/chat" },
-  { icon:"📈", label:"Evolução", href:"/desenvolvimento" },
-  { icon:"⚙️", label:"Ajustes", href:"#" },
+  { icon:"📚", label:"Conteúdo", href:"/conteudo" },
+  { icon:"⚙️", label:"Ajustes", href:"/ajustes" },
 ];
 
 export default function AppShell({ children }: { children: React.ReactNode }) {
@@ -25,7 +25,10 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
   }, []);
 
   function go(href: string) { if (href !== "#") router.push(href); }
-  function isActive(href: string) { return pathname === href || pathname.startsWith(href + "/"); }
+  function isActive(href: string) {
+    if (href === "/home") return pathname === "/home";
+    return pathname === href || pathname.startsWith(href + "/");
+  }
 
   const initial = parentName ? parentName[0].toUpperCase() : "?";
 
@@ -46,9 +49,23 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
           </button>
         ))}
 
+        <div className="sidebar-section" style={{ marginTop:16 }}>Módulos</div>
+        {[
+          { icon:"🥣", label:"Alimentação",  href:"/alimentacao" },
+          { icon:"📏", label:"Crescimento",  href:"/crescimento" },
+          { icon:"💉", label:"Vacinação",    href:"/vacinacao" },
+          { icon:"🩺", label:"Consultas",    href:"/consultas" },
+        ].map(item => (
+          <button key={item.href} onClick={() => go(item.href)}
+            className={`sidebar-item${isActive(item.href) ? " active" : ""}`}>
+            <span className="s-icon">{item.icon}</span>
+            {item.label}
+          </button>
+        ))}
+
         <button onClick={() => go("/registro")}
           className="sidebar-item"
-          style={{ marginTop:8, background:"var(--sage)", color:"var(--sage-dk)" }}>
+          style={{ marginTop:12, background:"var(--sage)", color:"var(--sage-dk)" }}>
           <span className="s-icon">✏️</span>
           Registrar
         </button>
@@ -71,7 +88,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
             {children}
           </div>
 
-          {/* ── BOTTOM NAV (mobile only) ── */}
+          {/* ── BOTTOM NAV ── */}
           <nav className="bottom-nav">
             {NAV.map(item => {
               const active = isActive(item.href);
@@ -79,7 +96,7 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 <button key={item.href} onClick={() => go(item.href)}
                   style={{
                     display:"flex", flexDirection:"column", alignItems:"center",
-                    gap:3, padding:"4px 12px", border:"none", background:"none",
+                    gap:3, padding:"4px 10px", border:"none", background:"none",
                     cursor:"pointer", opacity: active ? 1 : 0.38, transition:"opacity 0.2s",
                   }}>
                   <span style={{ fontSize:20 }}>{item.icon}</span>
@@ -90,8 +107,6 @@ export default function AppShell({ children }: { children: React.ReactNode }) {
                 </button>
               );
             })}
-
-            {/* FAB */}
             <button onClick={() => go("/registro")}
               style={{
                 width:50, height:50, borderRadius:"50%",

@@ -15,10 +15,10 @@ const MOODS = [
 const CARDS = [
   { id:"desenvolvimento", bg:"var(--sage)",  icon:"var(--sage-icon)",  emoji:"🌱", title:"Desenvolvimento", sub:"Evolução e marcos",    badge:"No ritmo dele ✓", tall:true,  href:"/desenvolvimento" },
   { id:"sono",            bg:"var(--lav)",   icon:"var(--lav-icon)",   emoji:"🌙", title:"Sono",            sub:"Registros recentes",   badge:"Observe esta semana", tall:true, href:"/sono" },
-  { id:"alimentacao",     bg:"var(--gold)",  icon:"var(--gold-icon)",  emoji:"🥣", title:"Alimentação",     sub:"Introdução alimentar", tall:false, href:"#" },
+  { id:"alimentacao",     bg:"var(--gold)",  icon:"var(--gold-icon)",  emoji:"🥣", title:"Alimentação",     sub:"Introdução alimentar", tall:false, href:"/alimentacao" },
   { id:"hoje",            bg:"var(--mint)",  icon:"var(--mint-icon)",  emoji:"✨", title:"Para hoje",       sub:"1 sugestão prática",   tall:false, href:"/registro" },
-  { id:"crescimento",     bg:"var(--sky)",   icon:"var(--sky-icon)",   emoji:"📏", title:"Crescimento",     sub:"Último: —",           tall:false, href:"#" },
-  { id:"vacinacao",       bg:"var(--blush)", icon:"var(--blush-icon)", emoji:"💉", title:"Vacinação",       sub:"Próxima: 9 meses",    tall:false, href:"#" },
+  { id:"crescimento",     bg:"var(--sky)",   icon:"var(--sky-icon)",   emoji:"📏", title:"Crescimento",     sub:"Peso e altura",        tall:false, href:"/crescimento" },
+  { id:"vacinacao",       bg:"var(--blush)", icon:"var(--blush-icon)", emoji:"💉", title:"Vacinação",       sub:"Calendário vacinal",   tall:false, href:"/vacinacao" },
 ];
 
 function todayLabel() {
