@@ -259,3 +259,40 @@ input[type=range] { accent-color: var(--lav-deep); width: 100%; cursor: pointer;
   display: flex;
   flex-direction: column;
 }
+
+/* ── DARK MODE ── */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg:        #1A1814;
+    --canvas:    #141210;
+    --white:     #242018;
+    --ink:       #F0EDE6;
+    --ink-mid:   #A09C94;
+    --ink-lt:    #6B6760;
+    --sage:      #2A3D28;
+    --sage-dk:   #7AB870;
+    --sage-icon: #1E3020;
+    --peach:     #3D2A22;
+    --peach-icon:#2E1E18;
+    --gold:      #3A3018;
+    --gold-icon: #2A2210;
+    --lav:       #2A2642;
+    --lav-dk:    #8880CC;
+    --lav-deep:  #A89EE8;
+    --lav-icon:  #1E1A30;
+    --coral:     #3D2222;
+    --coral-icon:#2E1818;
+    --sky:       #182838;
+    --sky-icon:  #101E2A;
+    --mint:      #182A26;
+    --mint-icon: #101E1C;
+    --blush:     #3A2030;
+    --blush-icon:#2A1822;
+    --canvas:    #141210;
+  }
+
+  .app-sidebar { border-right: 1px solid rgba(255,255,255,0.05); }
+  .sidebar-item:hover:not(.active) { background: rgba(255,255,255,0.06); }
+  .sidebar-user { background: rgba(255,255,255,0.06); }
+  .bottom-nav { background: rgba(26,24,20,0.96); border-top-color: rgba(255,255,255,0.08); }
+}

@@ -243,3 +243,44 @@ export function saveAppointments(appts: Appointment[]) {
   if (typeof window === "undefined") return;
   localStorage.setItem("luma_appts_v1", JSON.stringify(appts));
 }
+
+// ── MULTIPLE CHILDREN ──
+export interface BabyProfile {
+  id: string;
+  name: string;
+  birthDate: string;
+}
+
+export function loadBabyProfiles(): BabyProfile[] {
+  if (typeof window === "undefined") return [];
+  try {
+    const raw = localStorage.getItem("luma_babies_v1");
+    if (!raw) {
+      // migrate from single baby
+      const store = loadStore();
+      if (store.family?.baby) {
+        const profile: BabyProfile = { id: "default", ...store.family.baby };
+        const profiles = [profile];
+        localStorage.setItem("luma_babies_v1", JSON.stringify(profiles));
+        return profiles;
+      }
+      return [];
+    }
+    return JSON.parse(raw);
+  } catch { return []; }
+}
+
+export function saveBabyProfiles(profiles: BabyProfile[]) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_babies_v1", JSON.stringify(profiles));
+}
+
+export function getActiveBabyId(): string {
+  if (typeof window === "undefined") return "default";
+  return localStorage.getItem("luma_active_baby") || "default";
+}
+
+export function setActiveBabyId(id: string) {
+  if (typeof window === "undefined") return;
+  localStorage.setItem("luma_active_baby", id);
+}

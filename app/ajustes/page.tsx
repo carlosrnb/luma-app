@@ -200,6 +200,15 @@ export default function AjustesPage() {
             <Row icon="💉" label="Vacinação"      onPress={() => router.push("/vacinacao")} />
             <Row icon="🩺" label="Consultas"      onPress={() => router.push("/consultas")} />
             <Row icon="💬" label="Chat com a Luma" onPress={() => router.push("/chat")} />
+            <Row icon="📄" label="Exportar relatório PDF" onPress={() => router.push("/exportar")} />
+            <Row icon="🔗" label="Compartilhar app" onPress={() => {
+              if (navigator.share) {
+                navigator.share({ title: "Luma", text: "Acompanhe o desenvolvimento do seu filho com a Luma 🌱", url: "https://luma-familia.vercel.app" });
+              } else {
+                navigator.clipboard?.writeText("https://luma-familia.vercel.app");
+                setSaved(true); setTimeout(() => setSaved(false), 2000);
+              }
+            }} />
           </Section>
 
           {/* APP */}

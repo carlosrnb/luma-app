@@ -1,0 +1,16 @@
+{
+  "name": "Luma — Seu copiloto familiar",
+  "short_name": "Luma",
+  "description": "Acompanhe o desenvolvimento do seu filho com tranquilidade.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#F7F4EF",
+  "theme_color": "#26231E",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any maskable" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ],
+  "categories": ["health", "lifestyle"],
+  "lang": "pt-BR"
+}
