@@ -189,7 +189,7 @@ export default function ChatPage() {
   return (
     <div style={{
       display: "flex", flexDirection: "column",
-      height: "100dvh", background: "var(--bg)",
+      height: "100%", minHeight: "100dvh", background: "var(--bg)",
       maxWidth: 430, margin: "0 auto",
       position: "relative",
     }}>

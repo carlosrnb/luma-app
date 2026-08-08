@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   loadStore, saveStore, getAgeFull, getAgeInMonths, todayKey,
-  loadAppointments, loadVaccineRecords,
+  loadAppointments, loadVaccineRecords, loadGrowthLogs, loadFeedLogs,
   type Family, type MoodLog, type Appointment,
 } from "@/lib/store";
 import AppShell from "@/components/luma/AppShell";
@@ -49,35 +49,52 @@ export default function Home() {
     const next  = appts.find(a => a.date >= today) ?? null;
     setNextAppt(next);
 
-    // sleep data for cards
-    const sleepLogs = store.sleepLogs ?? [];
-    const lastSleep = sleepLogs[sleepLogs.length - 1];
-    const sleepSub  = lastSleep
-      ? `Última noite: ${lastSleep.hours}h`
-      : "Sem registros ainda";
+    // ── dynamic card data from localStorage ──
+    const sleepLogs  = store.sleepLogs ?? [];
+    const lastSleep  = sleepLogs[sleepLogs.length - 1];
+    const sleepSub   = lastSleep ? `Última noite: ${lastSleep.hours}h` : "Sem registros ainda";
     const sleepBadge = lastSleep
-      ? lastSleep.interruptions > 3 ? "Muitas pausas — observe" : "Boa noite ✓"
+      ? lastSleep.interruptions > 3 ? "Muitas pausas" : "Boa noite ✓"
       : undefined;
 
-    // vaccine data for cards
+    // growth
+    const growthLogs = loadGrowthLogs();
+    const lastGrowth = growthLogs[growthLogs.length - 1];
+    const growthSub  = lastGrowth
+      ? `${lastGrowth.weightKg ? lastGrowth.weightKg + " kg" : ""}${lastGrowth.weightKg && lastGrowth.heightCm ? " · " : ""}${lastGrowth.heightCm ? lastGrowth.heightCm + " cm" : ""}`
+      : "Sem registros ainda";
+
+    // feeding
+    const feedLogs   = loadFeedLogs();
+    const todayFeed  = feedLogs.filter(f => f.date === todayKey());
+    const feedSub    = todayFeed.length > 0
+      ? `${todayFeed.length} alimento${todayFeed.length > 1 ? "s" : ""} hoje`
+      : feedLogs.length > 0 ? "Ver histórico" : "Começar introdução";
+
+    // development — milestone context
+    const ageM       = getAgeInMonths(store.family!.baby.birthDate);
+    const devSub     = ageM < 6 ? "Fase do leite materno"
+                     : ageM < 12 ? "Introdução e marcos"
+                     : ageM < 24 ? "Primeiras palavras e passos"
+                     : "Autonomia em desenvolvimento";
+
+    // vaccines
     const vaccines   = loadVaccineRecords();
-    const overdue    = vaccines.filter(v => !v.doneDate && v.dueMonths < getAgeInMonths(store.family!.baby.birthDate));
+    const vacOverdue = vaccines.filter(v => !v.doneDate && v.dueMonths < ageM);
     const wizardOk   = localStorage.getItem("luma_vac_wizard_done") === "1";
-    const vacSub     = !wizardOk
-      ? "Atualizar carteira"
-      : overdue.length > 0
-        ? `${overdue.length} vacina${overdue.length > 1 ? "s" : ""} a agendar`
-        : "Em dia ✓";
-    const vacBadge   = wizardOk && overdue.length > 0
-      ? `${overdue.length} pendente${overdue.length > 1 ? "s" : ""}`
+    const vacSub     = !wizardOk ? "Atualizar carteira"
+                     : vacOverdue.length > 0 ? `${vacOverdue.length} a agendar`
+                     : "Em dia ✓";
+    const vacBadge   = wizardOk && vacOverdue.length > 0
+      ? `${vacOverdue.length} pendente${vacOverdue.length > 1 ? "s" : ""}`
       : undefined;
 
     setCards([
-      { id: "desenvolvimento", bg: "var(--sage)",  icon: "var(--sage-icon)",  emoji: "🌱", title: "Desenvolvimento", sub: "Marcos e evolução",    badge: "No ritmo ✓", tall: true,  href: "/desenvolvimento" },
+      { id: "desenvolvimento", bg: "var(--sage)",  icon: "var(--sage-icon)",  emoji: "🌱", title: "Desenvolvimento", sub: devSub,  badge: "No ritmo ✓", tall: true,  href: "/desenvolvimento" },
       { id: "sono",            bg: "var(--lav)",   icon: "var(--lav-icon)",   emoji: "🌙", title: "Sono",            sub: sleepSub, badge: sleepBadge, tall: true,  href: "/sono" },
-      { id: "alimentacao",     bg: "var(--gold)",  icon: "var(--gold-icon)",  emoji: "🥣", title: "Alimentação",     sub: "Introdução alimentar", tall: false, href: "/alimentacao" },
+      { id: "alimentacao",     bg: "var(--gold)",  icon: "var(--gold-icon)",  emoji: "🥣", title: "Alimentação",     sub: feedSub,  tall: false, href: "/alimentacao" },
       { id: "hoje",            bg: "var(--mint)",  icon: "var(--mint-icon)",  emoji: "✨", title: "Para hoje",       sub: "1 sugestão prática",   tall: false, href: "/registro" },
-      { id: "crescimento",     bg: "var(--sky)",   icon: "var(--sky-icon)",   emoji: "📏", title: "Crescimento",     sub: "Peso e altura",        tall: false, href: "/crescimento" },
+      { id: "crescimento",     bg: "var(--sky)",   icon: "var(--sky-icon)",   emoji: "📏", title: "Crescimento",     sub: growthSub, tall: false, href: "/crescimento" },
       { id: "vacinacao",       bg: "var(--blush)", icon: "var(--blush-icon)", emoji: "💉", title: "Vacinação",       sub: vacSub, badge: vacBadge, tall: false, href: "/vacinacao" },
     ]);
 

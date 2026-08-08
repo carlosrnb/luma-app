@@ -253,3 +253,9 @@ input[type=range] { accent-color: var(--lav-deep); width: 100%; cursor: pointer;
 
 /* ── SCROLLBAR (desktop inside phone frame) ── */
 .app-phone .app-scroll::-webkit-scrollbar { display: none; }
+
+/* Chat page fills its container fully */
+.app-phone .app-scroll {
+  display: flex;
+  flex-direction: column;
+}

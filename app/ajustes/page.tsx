@@ -22,6 +22,14 @@ export default function AjustesPage() {
     setBabyName(store.family.baby.name);
     setBirthDate(store.family.baby.birthDate);
     setIsPro(loadProStatus().isPro);
+
+    // Re-read pro status when user returns to this tab (e.g. after /pro page)
+    function onFocus() { setIsPro(loadProStatus().isPro); }
+    window.addEventListener("focus", onFocus);
+    document.addEventListener("visibilitychange", () => {
+      if (document.visibilityState === "visible") setIsPro(loadProStatus().isPro);
+    });
+    return () => window.removeEventListener("focus", onFocus);
   }, [router]);
 
   function saveName(field: "parent" | "baby") {
