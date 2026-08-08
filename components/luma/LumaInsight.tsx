@@ -8,24 +8,22 @@ interface Props {
 }
 
 export default function LumaInsight({ context, question, style }: Props) {
-  const [text, setText]         = useState("");
-  const [loading, setLoading]   = useState(true);
-  const [error, setError]       = useState(false);
-  const fetchedRef = useRef(false);
+  const [text, setText]       = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError]     = useState(false);
+  const abortRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    // prevent double-fetch in StrictMode
-    if (fetchedRef.current) return;
-    fetchedRef.current = true;
+  function doFetch() {
+    // cancel any in-flight request
+    abortRef.current?.abort();
+    const controller = new AbortController();
+    abortRef.current = controller;
 
-    let cancelled = false;
     setLoading(true);
     setText("");
     setError(false);
 
-    // 12s timeout
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
+    const timeout = setTimeout(() => controller.abort(), 14000);
 
     fetch("/api/luma", {
       method: "POST",
@@ -38,51 +36,29 @@ export default function LumaInsight({ context, question, style }: Props) {
         return r.json();
       })
       .then(d => {
-        if (!cancelled) setText(d.text || "");
-      })
-      .catch(() => {
-        if (!cancelled) setError(true);
-      })
-      .finally(() => {
         clearTimeout(timeout);
-        if (!cancelled) setLoading(false);
+        setText(d.text || "");
+        setLoading(false);
+      })
+      .catch(err => {
+        clearTimeout(timeout);
+        if (err.name === "AbortError") return; // intentional cancel — don't show error
+        setError(true);
+        setLoading(false);
       });
-
-    return () => { cancelled = true; };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  function retry() {
-    fetchedRef.current = false;
-    setError(false);
-    setLoading(true);
-    setText("");
-    // remount trick — toggle key from parent not available, so re-trigger
-    let cancelled = false;
-    const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 12000);
-    fetch("/api/luma", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ context, question }),
-      signal: controller.signal,
-    })
-      .then(r => r.json())
-      .then(d => { if (!cancelled) setText(d.text || ""); })
-      .catch(() => { if (!cancelled) setError(true); })
-      .finally(() => { clearTimeout(timeout); if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
   }
+
+  useEffect(() => {
+    doFetch();
+    return () => { abortRef.current?.abort(); };
+  // Re-fetch whenever context or question changes (new page / new baby data)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [context, question]);
 
   return (
     <div style={{
-      background: "white",
-      borderRadius: "var(--r)",
-      padding: "14px 16px",
-      display: "flex",
-      gap: 12,
-      alignItems: "flex-start",
-      ...style,
+      background: "white", borderRadius: "var(--r)", padding: "14px 16px",
+      display: "flex", gap: 12, alignItems: "flex-start", ...style,
     }}>
       {/* orb */}
       <div style={{
@@ -114,11 +90,10 @@ export default function LumaInsight({ context, question, style }: Props) {
             <p style={{ fontSize: 13, color: "var(--ink-lt)", fontStyle: "italic" }}>
               Não consegui carregar agora.
             </p>
-            <button onClick={retry} style={{
+            <button onClick={doFetch} style={{
               fontSize: 11, fontWeight: 600, color: "var(--sage-dk)",
-              border: "none", cursor: "pointer",
-              padding: "2px 8px", borderRadius: 20,
-              background: "var(--sage)",
+              background: "var(--sage)", border: "none", cursor: "pointer",
+              padding: "3px 10px", borderRadius: 20,
             }}>Tentar de novo</button>
           </div>
         )}

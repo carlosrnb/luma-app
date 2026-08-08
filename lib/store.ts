@@ -112,12 +112,16 @@ export function loadProStatus(): ProStatus {
   if (typeof window === "undefined")
     return { isPro: false, trialUsed: false, freeMessagesUsed: 0, freeMessagesDate: "" };
   try {
-    const raw = localStorage.getItem("luma_pro_v1");
+    const raw   = localStorage.getItem("luma_pro_v1");
     const today = new Date().toISOString().split("T")[0];
-    if (!raw) return { isPro: false, trialUsed: false, freeMessagesUsed: 0, freeMessagesDate: today };
+    if (!raw) {
+      const fresh = { isPro: false, trialUsed: false, freeMessagesUsed: 0, freeMessagesDate: today };
+      localStorage.setItem("luma_pro_v1", JSON.stringify(fresh));
+      return fresh;
+    }
     const parsed = JSON.parse(raw) as ProStatus;
-    // reset daily counter
-    if (parsed.freeMessagesDate !== today) {
+    // reset daily free message counter at midnight
+    if (parsed.freeMessagesDate !== today && !parsed.isPro) {
       parsed.freeMessagesUsed = 0;
       parsed.freeMessagesDate = today;
       localStorage.setItem("luma_pro_v1", JSON.stringify(parsed));

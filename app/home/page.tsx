@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
-  loadStore, saveStore, getAgeFull, todayKey,
+  loadStore, saveStore, getAgeFull, getAgeInMonths, todayKey,
   loadAppointments, loadVaccineRecords,
   type Family, type MoodLog, type Appointment,
 } from "@/lib/store";
@@ -61,11 +61,16 @@ export default function Home() {
 
     // vaccine data for cards
     const vaccines   = loadVaccineRecords();
-    const overdue    = vaccines.filter(v => !v.doneDate && v.dueMonths < getAgeInMonthsFromBirth(store.family!.baby.birthDate));
-    const vacSub     = overdue.length > 0
-      ? `${overdue.length} vacina${overdue.length > 1 ? "s" : ""} a agendar`
-      : "Em dia ✓";
-    const vacBadge   = overdue.length > 0 ? `${overdue.length} pendente${overdue.length > 1 ? "s" : ""}` : undefined;
+    const overdue    = vaccines.filter(v => !v.doneDate && v.dueMonths < getAgeInMonths(store.family!.baby.birthDate));
+    const wizardOk   = localStorage.getItem("luma_vac_wizard_done") === "1";
+    const vacSub     = !wizardOk
+      ? "Atualizar carteira"
+      : overdue.length > 0
+        ? `${overdue.length} vacina${overdue.length > 1 ? "s" : ""} a agendar`
+        : "Em dia ✓";
+    const vacBadge   = wizardOk && overdue.length > 0
+      ? `${overdue.length} pendente${overdue.length > 1 ? "s" : ""}`
+      : undefined;
 
     setCards([
       { id: "desenvolvimento", bg: "var(--sage)",  icon: "var(--sage-icon)",  emoji: "🌱", title: "Desenvolvimento", sub: "Marcos e evolução",    badge: "No ritmo ✓", tall: true,  href: "/desenvolvimento" },
@@ -85,12 +90,6 @@ export default function Home() {
       `Próxima consulta: ${next ? `${next.date} com ${next.doctor}` : "nenhuma agendada"}.`
     );
   }, [router]);
-
-  function getAgeInMonthsFromBirth(birthDate: string) {
-    const birth = new Date(birthDate);
-    const now   = new Date();
-    return (now.getFullYear() - birth.getFullYear()) * 12 + (now.getMonth() - birth.getMonth());
-  }
 
   function saveMood(key: string) {
     setMood(key);
